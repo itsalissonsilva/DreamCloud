@@ -68,19 +68,6 @@ class StartPage(tk.Frame):
             str_year = str(x.year)
 
             date_formatted = "[" + str_time + "] " + str_day + ", " + str_month + " " + str_date +", " + str_year + ": \n"
-        def cloud():
-            text = open("my_diary.txt","r").read()
-            stopwords = STOPWORDS
-
-            wc = WordCloud(
-                background_color='white',
-                stopwords=stopwords,
-                height = 400,
-                width = 400
-                )
-            wc.generate(text)
-            wc.to_file('wordcloud.png')
-
             string1 = date_formatted + y + "\n \n"
                 # \n is placed to indicate End of Line
 
@@ -88,19 +75,35 @@ class StartPage(tk.Frame):
             file1 = open( txtfilename, "a" )    #open the text file, append to it 
             file1.write(string1)
             file1.close()
-    
 
-        button = ttk.Button(self, text="SAVE", command = writediary)
-        button.place(x=100,y=320, width=300)       
+        def cloud():
+            text = open('my_diary.txt', mode='r', encoding='utf-8').read()
+            stopwords = STOPWORDS
 
-        button1 = ttk.Button(self, text="WRITE", command = lambda:controller.show_frame(StartPage))
-        button1.place(x=55,y=360)
+            wc = WordCloud(
+                background_color='white',
+                stopwords=stopwords,
+                height = 300,
+                width = 375
+                )
+            wc.generate(text)
+            wc.to_file('wordcloud_output.png')
+            controller.show_frame(PageTwo)
 
-        button2 = ttk.Button(self, text="ENTRIES", command = lambda:controller.show_frame(PageOne))
-        button2.place(x=155,y=360)
 
-        button3 = ttk.Button(self, text="WORDCLOUD", command = lambda: cloud)
-        button3.place(x=255,y=360)
+        
+
+        button = tk.Button(self, text="SAVE", command = writediary, bg="blue")
+        button.place(x=53,y=320, width=375)       
+
+        button1 = tk.Button(self, text="WRITE", command = lambda:controller.show_frame(StartPage),bg="green")
+        button1.place(x=53,y=350,width=150)
+
+        button2 = tk.Button(self, text="ENTRIES", command = lambda:controller.show_frame(PageOne), bg="yellow")
+        button2.place(x=193,y=350, width=110)
+
+        button3 = tk.Button(self, text="WORDCLOUD", command = cloud, bg="red")
+        button3.place(x=293,y=350,width=135)
 
 
 
@@ -118,15 +121,29 @@ class PageOne(tk.Frame):
             Lb.insert(END,x)
         f.close()
 
+        def cloud():
+            text = open('my_diary.txt', mode='r', encoding='utf-8').read()
+            stopwords = STOPWORDS
 
-        button1 = ttk.Button(self, text="WRITE", command = lambda:controller.show_frame(StartPage))
-        button1.place(x=55,y=360)
+            wc = WordCloud(
+                background_color='white',
+                stopwords=stopwords,
+                height = 300,
+                width = 375
+                )
+            wc.generate(text)
+            wc.to_file('wordcloud_output.png')
+            controller.show_frame(PageTwo)
 
-        button2 = ttk.Button(self, text="ENTRIES", command = lambda:controller.show_frame(PageOne))
-        button2.place(x=155,y=360)
 
-        button3 = ttk.Button(self, text="WORDCLOUD", command = lambda:controller.show_frame(PageTwo))
-        button3.place(x=255,y=360)
+        button1 = tk.Button(self, text="WRITE", command = lambda:controller.show_frame(StartPage),bg="green")
+        button1.place(x=53,y=350,width=150)
+
+        button2 = tk.Button(self, text="ENTRIES", command = lambda:controller.show_frame(PageOne), bg="yellow")
+        button2.place(x=193,y=350, width=110)
+
+        button3 = tk.Button(self, text="WORDCLOUD", command = cloud, bg="red")
+        button3.place(x=293,y=350,width=135)
 
 
 
@@ -134,31 +151,46 @@ class PageTwo(tk.Frame):
 
     def __init__(self,parent,controller):
         tk.Frame.__init__(self,parent)
-        label = tk.Label(self,text="Page 02",font = LARGE_FONT)
-        label.pack(pady=10,padx=10)
+        label = tk.Label(self,text="Generate Word Cloud:",font = LARGE_FONT)
+        label.pack(pady=10,padx=5)
+
+        def update():
+            image1 = Image.open('wordcloud_output.png')
+            test = ImageTk.PhotoImage(image1)
+
+            label1 = tk.Label(self,image=test)
+            label1.image = test
+
+            # Position image
+            label1.place(x=55, y=50)
 
         def cloud():
-            text = open("my_diary.txt","r")
+            text = open('my_diary.txt', mode='r', encoding='utf-8').read()
             stopwords = STOPWORDS
 
             wc = WordCloud(
                 background_color='white',
                 stopwords=stopwords,
-                height = 400,
-                width = 400
+                height = 300,
+                width = 375
                 )
             wc.generate(text)
-            wc.to_file('wordcloud.png')
-     
+            wc.to_file('wordcloud_output.png')
+            controller.show_frame(PageTwo)
+            
 
-        button1 = ttk.Button(self, text="WRITE", command = lambda:controller.show_frame(StartPage))
-        button1.place(x=55,y=360)
+        
+        button0 = ttk.Button(self, text="UPDATE", command = update)
+        button0.place(x=330,y=10)     
 
-        button2 = ttk.Button(self, text="ENTRIES", command = lambda:controller.show_frame(PageOne))
-        button2.place(x=155,y=360)
+        button1 = tk.Button(self, text="WRITE", command = lambda:controller.show_frame(StartPage),bg="green")
+        button1.place(x=53,y=350,width=150)
 
-        button3 = ttk.Button(self, text="WORDCLOUD", command = lambda:controller.show_frame(PageTwo))
-        button3.place(x=255,y=360)  
+        button2 = tk.Button(self, text="ENTRIES", command = lambda:controller.show_frame(PageOne), bg="yellow")
+        button2.place(x=193,y=350, width=110)
+
+        button3 = tk.Button(self, text="WORDCLOUD", command = cloud, bg="red")
+        button3.place(x=293,y=350,width=135)
 
 
 
